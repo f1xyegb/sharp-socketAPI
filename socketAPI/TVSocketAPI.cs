@@ -15,9 +15,21 @@ class TVSocketAPI
 
         static string GenerateSessionID(string idType)
         {
-            string sesionid = "";
+            // Generate random session id
+            int stringLength = 12;
+            string letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789";
+            Random random = new Random();
+            StringBuilder randomString = new StringBuilder();
 
-            return sesionid;
+            for (int i = 0; i < stringLength; i++)
+            {
+                randomString.Append(letters[random.Next(0, letters.Length)]);
+            }
+
+            string sessionID = "cs_" + randomString.ToString();
+
+
+            return sessionID;
         }
 
         static async Task SendMessage(string message, ClientWebSocket webSocket)
