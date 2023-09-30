@@ -13,6 +13,41 @@ class TVSocketAPI
     static async Task Main(string[] args)
     {
 
+        static string GenerateSessionID(string idType)
+        {
+            string sesionid = "";
+
+            return sesionid;
+        }
+
+        static async Task SendMessage(string message, ClientWebSocket webSocket)
+        {
+            
+        }
+
+        static void PrepareMessages(ClientWebSocket webSocket, string func, string quoteSession, string chartSession, string token, string symbol, string timeframe, int datasize)
+        {
+            
+        }
+
+        static List<List<string>> ConvertRawData(string rawdata)
+        {
+
+            List<List<string>> dataset = new List<List<string>>();
+
+            return dataset;
+        }
+
+        static async Task<List<List<string>>> GetData(ClientWebSocket webSocket, string chartSession)
+        {
+
+            List<List<string>> data = new List<List<string>>();
+
+   
+
+            return data;
+        }
+
         // Data to connect to socket
 
         string url = "wss://data.tradingview.com/socket.io/websocket";
@@ -23,7 +58,6 @@ class TVSocketAPI
 
         using (ClientWebSocket webSocket = new ClientWebSocket())
         {
-
             // Set headers
             webSocket.Options.SetRequestHeader("Origin", origin);
             foreach (var header in customHeaders.Split('\n', StringSplitOptions.RemoveEmptyEntries))
@@ -34,11 +68,6 @@ class TVSocketAPI
                     webSocket.Options.SetRequestHeader(parts[0], parts[1]);
                 }
             }
-
-            // Connect
-
-            await webSocket.ConnectAsync(new Uri(url), CancellationToken.None);
-            Console.WriteLine("WebSocket connected");
 
 
         }
