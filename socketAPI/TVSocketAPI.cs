@@ -227,6 +227,9 @@ class TVSocketAPI
                 PrepareMessages(webSocket, "create_series", null, chartSession, null, null, TimeFrame, 5000);
 
                 List<List<string>> data = await GetData(webSocket, chartSession);
+
+                // Sort by date
+                data.Sort((x, y) => x[0].CompareTo(y[0]));
             }
 
 
