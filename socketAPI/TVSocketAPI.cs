@@ -197,6 +197,36 @@ class TVSocketAPI
                 {
                     webSocket.Options.SetRequestHeader(parts[0], parts[1]);
                 }
+
+                // Connect
+
+                await webSocket.ConnectAsync(new Uri(url), CancellationToken.None);
+                Console.WriteLine("WebSocket connected");
+
+
+                // Token for connect and data about ticker and timeframe of price chart
+                string Token = "eyJhbGciOiJSUzUxMiIsImtpZCI6IkdaeFUiLCJ0eXAiOiJKV1QifQ.eyJ1c2VyX2lkIjoxMjEzMjc5MiwiZXhwIjoxNjk1ODYwNTE2LCJpYXQiOjE2OTU4NDYxMTYsInBsYW4iOiJwcm8iLCJleHRfaG91cnMiOjEsInBlcm0iOiIiLCJzdHVkeV9wZXJtIjoiUFVCO2FVU2MxVTRad3VJZmdYUnQzWlp1Tm9hS0JPN2ZJRnlVLFBVQjtiMjhkYTkxMzI4NzU0YWMxOTgyOTJkYWY0NThlMmZkOCx0di12b2x1bWVieXByaWNlLHR2LWNoYXJ0cGF0dGVybnMiLCJtYXhfc3R1ZGllcyI6NSwibWF4X2Z1bmRhbWVudGFscyI6MCwibWF4X2NoYXJ0cyI6MiwibWF4X2FjdGl2ZV9hbGVydHMiOjIwLCJtYXhfc3R1ZHlfb25fc3R1ZHkiOjEsIm1heF9hY3RpdmVfcHJpbWl0aXZlX2FsZXJ0cyI6MjAsIm1heF9hY3RpdmVfY29tcGxleF9hbGVydHMiOjIwLCJtYXhfY29ubmVjdGlvbnMiOjEwfQ.kaHWV-aMnTBT--vdk5joLc2aOo5etx63k8x5hgvHqCSsGBOk3_Gsr171sLN9hdvzkw99jDTtctbMD0wztLGtapuOs1Bp-xXvHnpSxzqPMDKT7lRddTw7pBOGLpCI7ZIheqga5r5DVMlTja3Af1QeFMprANhyTR0rQQpOdp2k68Q";
+                string Symbol = "CAPITALCOM:US500";
+                string TimeFrame = "60";
+
+                // Generate session id
+                string chartSession = GenerateSessionID("cs");
+
+
+
+                // Call the function to set the authentication token
+                PrepareMessages(webSocket, "set_auth_token", null, null, Token, null, null, 0);
+
+                // Call the function to create a chart session
+                PrepareMessages(webSocket, "chart_create_session", null, chartSession, null, null, null, 0);
+
+                // Call the function to set the symbol
+                PrepareMessages(webSocket, "resolve_symbol", null, chartSession, null, Symbol, null, 0);
+
+                // Call the function to create data series
+                PrepareMessages(webSocket, "create_series", null, chartSession, null, null, TimeFrame, 5000);
+
+                List<List<string>> data = await GetData(webSocket, chartSession);
             }
 
 
