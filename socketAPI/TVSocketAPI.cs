@@ -95,9 +95,47 @@ class TVSocketAPI
         static async Task<List<List<string>>> GetData(ClientWebSocket webSocket, string chartSession)
         {
 
+            // 2mb buffer
+            byte[] receiveBuffer = new byte[2097152];
             List<List<string>> data = new List<List<string>>();
 
-   
+            while (webSocket.State == WebSocketState.Open)
+            {
+                // Read mssg from socket
+                var receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(receiveBuffer), CancellationToken.None);
+
+                if (receiveResult.MessageType == WebSocketMessageType.Text)
+                {
+                    string receivedMessage = Encoding.UTF8.GetString(receiveBuffer, 0, receiveResult.Count);
+
+
+                    // ping-pong
+                    if (receivedMessage.Contains("~h~"))
+                    {
+                        await SendMessage(receivedMessage, webSocket);
+                    }
+
+                    if (receivedMessage.Contains("timescale_update"))
+                    {
+                        // If find "timescale_update", add data to dataset
+                        data.AddRange(ConvertRawData(receivedMessage));
+                        PrepareMessages(webSocket, "request_more_data", null, chartSession, null, null, null, 1000);
+                    }
+
+                    if (receivedMessage.Contains("data_completed\":\"limit\""))
+                    {
+                        // If find "data_completed":"limit", end loop
+                        break;
+                    }
+
+
+                }
+                else if (receiveResult.MessageType == WebSocketMessageType.Close)
+                {
+                    Console.WriteLine("Received close message. Closing the WebSocket.");
+                    break;
+                }
+            }
 
             return data;
         }
