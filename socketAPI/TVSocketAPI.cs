@@ -230,6 +230,16 @@ class TVSocketAPI
 
                 // Sort by date
                 data.Sort((x, y) => x[0].CompareTo(y[0]));
+
+                // Print the data
+                foreach (List<string> dataLine in data)
+                {
+                    foreach (string item in dataLine)
+                    {
+                        Console.Write(item + " ");
+                    }
+                    Console.WriteLine();
+                }
             }
 
 
