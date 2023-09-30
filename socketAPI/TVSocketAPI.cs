@@ -34,7 +34,17 @@ class TVSocketAPI
 
         static async Task SendMessage(string message, ClientWebSocket webSocket)
         {
-            
+            string formattedMessage = message;
+
+            // ping-pong
+            if (!message.Contains("~h~"))
+            {
+                formattedMessage = "~m~" + message.Length + "~m~" + message;
+            }
+            //to binary and send
+            byte[] messageBytes = Encoding.UTF8.GetBytes(formattedMessage);
+            await webSocket.SendAsync(new ArraySegment<byte>(messageBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+
         }
 
         static void PrepareMessages(ClientWebSocket webSocket, string func, string quoteSession, string chartSession, string token, string symbol, string timeframe, int datasize)
