@@ -81,6 +81,15 @@ class TVSocketAPI
                 };
                 ms = JsonConvert.SerializeObject(payload);
             }
+            else if (func == "request_more_data")
+            {
+                var payload = new { m = "request_more_data", p = new object[] { chartSession, "sds_1", datasize } };
+
+                ms = JsonConvert.SerializeObject(payload);
+            }
+
+            // Call the func to send mssg
+            SendMessage(ms, webSocket);
 
         }
 
