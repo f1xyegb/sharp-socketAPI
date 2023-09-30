@@ -49,7 +49,39 @@ class TVSocketAPI
 
         static void PrepareMessages(ClientWebSocket webSocket, string func, string quoteSession, string chartSession, string token, string symbol, string timeframe, int datasize)
         {
-            
+            // Generate mssg to understandble to socket format 
+            string ms = "";
+
+            if (func == "set_auth_token")
+            {
+                var payload = new { m = "set_auth_token", p = new string[] { token } };
+                ms = JsonConvert.SerializeObject(payload);
+            }
+            else if (func == "chart_create_session")
+            {
+                var payload = new { m = "chart_create_session", p = new string[] { chartSession, "" } };
+                ms = JsonConvert.SerializeObject(payload);
+                ms = JsonConvert.SerializeObject(payload);
+            }
+            else if (func == "resolve_symbol")
+            {
+                var payload = new
+                {
+                    m = "resolve_symbol",
+                    p = new string[] { chartSession, "sds_sym_1", $"={{\"adjustment\":\"splits\",\"session\":\"regular\",\"symbol\":\"{symbol}\"}}" }
+                };
+                ms = JsonConvert.SerializeObject(payload);
+            }
+            else if (func == "create_series")
+            {
+                var payload = new
+                {
+                    m = "create_series",
+                    p = new object[] { chartSession, "sds_1", "s1", "sds_sym_1", timeframe, datasize, "" }
+                };
+                ms = JsonConvert.SerializeObject(payload);
+            }
+
         }
 
         static List<List<string>> ConvertRawData(string rawdata)
