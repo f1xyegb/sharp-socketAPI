@@ -87,7 +87,36 @@ class TVSocketAPI
         static List<List<string>> ConvertRawData(string rawdata)
         {
 
+            // Find the part of rawdata that contains the array
+            int start = rawdata.IndexOf("\"s\":[") + 5;
+            int end = rawdata.IndexOf("}],\"ns\":{\"d\":\"\",\"indexes\":[]}");
+
+            if (start == -1 || end == -1)
+            {
+                throw new ArgumentException("Invalid rawdata format");
+            }
+
+            string dataArray = rawdata.Substring(start, end - start);
+
+            // Split the dataArray into individual dataLine strings
+            string[] dataArrayLines = dataArray.Split("},");
+
             List<List<string>> dataset = new List<List<string>>();
+
+            // Parse and split data from each dataLine
+            foreach (string dataLine in dataArrayLines)
+            {
+                int startIndex = dataLine.IndexOf("[") + 1;
+                int endIndex = dataLine.IndexOf("]");
+
+                if (startIndex != -1 && endIndex != -1)
+                {
+                    string data = dataLine.Substring(startIndex, endIndex - startIndex);
+                    List<string> dataFields = new List<string>(data.Split(','));
+                    dataset.Add(dataFields);
+                }
+            }
+
 
             return dataset;
         }
